@@ -1,0 +1,38 @@
+﻿@model Nabavki.ViewModels.ArtiklViewModel
+@{
+    ViewBag.Title = Model.Naziv;
+}
+<br />
+<a href="/artikli/index" class="btn btn-info">Назад</a>
+<br />
+
+<h2>@Model.Naziv</h2>
+
+<form action="/artikli/UpdateArtikl" method="post">
+
+    <input type="hidden" name="IdArtikli" value="@Model.IdArtikli">
+    <input type="hidden" name="IdPartner" value="@Model.IdPartner">
+
+    <div class="form-group">
+        <label for="Sifra" id="sufra">Шифра за Артикл:</label>
+        @Html.TextBoxFor(x => x.Sifra, null, new { @class = "form-control", @placeholder = "Внеси шифра" })
+        @Html.ValidationMessageFor(x => x.Sifra)
+    </div>
+
+    <div class="form-group">
+        <label for="Naziv">Артикл:</label>
+        @Html.TextBoxFor(x => x.Naziv, null, new { @class = "form-control", @placeholder = "Внеси назив" })
+        @Html.ValidationMessageFor(x => x.Naziv)
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="form-control" value="Потврди">
+    </div>
+</form>
+
+
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}

@@ -1,0 +1,79 @@
+﻿@model Nabavki.ViewModels.FirmaViewModel
+@{
+    ViewBag.Title = "Details";
+}
+<br />
+<a href="/firmi/index" class="btn btn-info">Назад</a>
+<br />
+
+<h2>@Model.Naziv</h2>
+
+
+<div class="form-group">
+    <label for="naziv">Назив на партнер:</label>
+    <input required type="text" class="form-control" name="naziv" id="partner" placeholder="Внеси партнер">
+</div>
+<div class="form-group">
+    <button class="btn btn-success" id="submit">Потврди</button>
+    <input type="hidden" id="firma" name="idFirma" value="@Model.IdFirma" />
+</div>
+
+<br>
+<br>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Партнери</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Partneri)
+        {
+            <tr>
+                <td>
+                    @item.Naziv
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts{
+    <script>
+
+        $("#submit").click(function () {
+
+            var partnerNameValue = $("#partner").val();
+            var idFirmaValue = $("#firma").val();
+
+            $.ajax({
+                method: "POST",
+                url: "http://localhost:65274/Firmi/AddPartner",
+                data: {
+                    naziv: partnerNameValue,
+                    idFirma: idFirmaValue
+                },
+                dataType: "json",
+                success: function (data) {
+
+                    var $body = $("tbody");
+                    $body.empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        $body.append("<tr> <td>" + data[i].Naziv + "</td></tr>")
+                        console.log(data[i]);
+                    }
+                    $("#partner").val("");
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        });
+    </script>
+
+}
+
+
+

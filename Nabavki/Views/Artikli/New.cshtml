@@ -1,0 +1,104 @@
+﻿@model Nabavki.ViewModels.AddArtiklViewModel
+
+@{
+    ViewBag.Title = "New";
+}
+
+<br />
+<a href="/artikli/index" class="btn btn-info">Назад</a>
+<br />
+
+<h2>Додади артикл</h2>
+
+<br />
+
+<div class="form-group">
+    <label for="firmi">Фирма</label>
+    <select class="form-control" name="selectFirmi" id="firmi">
+        <option selected="true" disabled="disabled">Избери фирма...</option>
+        @foreach (var firma in Model.Firmi)
+        {
+            <option value=@firma.IdFirma>@firma.Naziv</option>
+        }
+    </select>
+</div>
+
+
+<form action="/artikli/SaveArtikl" method="post">
+
+    <div id="part" style="display:none">
+
+        <div class="form-group">
+            <label for="idPartner">Партнер:</label>
+            <select class="form-control" name="idPartner" id="partneri">
+                <option selected disabled="disabled">Избери Партнер...</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div id="artikl" style="display:none">
+
+        <div class="form-group">
+            <label for="Sifra" id="sufra">Шифра за Артикл:</label>
+            @Html.TextBoxFor(x => x.ArtiklSifra, null, new { @class = "form-control", @placeholder = "Внеси шифра" })
+            @Html.ValidationMessageFor(x => x.ArtiklSifra)
+        </div>
+
+        <div class="form-group">
+            <label for="Naziv">Артикл:</label>
+            @Html.TextBoxFor(x => x.ArtiklNaziv, null, new { @class = "form-control", @placeholder = "Внеси назив" })
+            @Html.ValidationMessageFor(x => x.ArtiklNaziv)
+        </div>
+
+        <div class="form-group">
+            <br>
+            <input type="submit" class="form-control" value="Потврди">
+        </div>
+
+    </div>
+</form>
+
+
+@section Scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        $("#firmi").change(function () {
+
+            if ($('#partneri').is(':visible')) {
+                $("#part").hide();
+                $("#partneri").empty();
+                $("#artikl").hide();
+                $("#sifra").empty();
+                $("#naziv").empty();
+            }
+
+            $("#part").show();
+            var option = $("select[name='selectFirmi']").val();
+            $.ajax({
+                method: "GET",
+                url: "http://localhost:65274/artikli/GetPartneri/" + option,
+                dataType: "json",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#partneri").append(`
+                                    <option value=${data[i].IdPartner}>${data[i].Naziv}</option>
+                                `);
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+
+        });
+
+        $("#partneri").change(function () {
+            $("#artikl").show();
+        })
+
+
+    </script>
+}

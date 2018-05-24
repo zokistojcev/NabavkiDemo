@@ -1,0 +1,33 @@
+﻿@model List<Nabavki.ViewModels.ArtiklViewModel>
+@{
+    ViewBag.Title = "Листа на артикли";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<a href="/artikli/new" class="btn btn-success">Додади нов артикл</a>
+<a href="/artikli/ArtickleByNaziv" class="btn btn-success">Најди артикл по назив</a>
+<a class="btn btn-success" href="/artikli/export_artikli">Download Report</a>
+<br />
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Назив на артикл</th>
+            <th>Шифра на артикл</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var artikl in Model)
+        {
+            <tr>
+                <td><a href="/artikli/details/@artikl.IdArtikli">@artikl.Naziv</a></td>
+                <td>@artikl.Sifra</td>
+                <td>
+                    <a href="/artikli/edit/@artikl.IdArtikli" class="btn btn-info">Edit</a>
+                    <a href="/artikli/delete/@artikl.IdArtikli" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

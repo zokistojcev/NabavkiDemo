@@ -1,0 +1,31 @@
+﻿@model List<Nabavki.ViewModels.FirmaViewModel>
+@{
+    ViewBag.Title = "Листа на фирми";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+<a href="/firmi/new" class="btn btn-success">Додади нова фирма</a>
+<br />
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Назив на фирма</th>
+            <th>Акција</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var firma in Model)
+        {
+            <tr>
+                <td>
+                    <a href="/firmi/details/@firma.IdFirma">@firma.Naziv</a>
+                </td>
+                <td>
+                    <a href="/firmi/edit/@firma.IdFirma" class="btn btn-info">Edit</a>
+                    <a href="/firmi/delete/@firma.IdFirma" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "ArtickleByNaziv";
+}
+
+<br />
+<a href="/artikli/index" class="btn btn-info">Назад</a>
+<br />
+
+<h2>Најди артикл по назив</h2>
+<br>
+
+<input type="text" name="name" class="form-control" value="" placeholder="Внеси име на артикл" id="name" />
+<br>
+<input type="submit" class="form-control" id="submit" value="Потврди">
+<br>
+<div id="h3"></div>
+
+@section scripts{
+    <script>
+        $('#submit').click(function () {
+            var query = $('#name').val();
+            $.ajax({
+                url: '/GetArtiklByNaziv/' + query,
+                method: 'GET',
+                success: function (data) {
+                    if (data === 0) {
+                        $("#h3").empty();
+                        $("#h3").append("<h3>Не постои ваков запис<h3>");
+                    }
+                    else {
+                        $("#h3").empty();
+                        $("#h3").append("<h3>" + "ID за овој запис е:" + data + "<h3>")
+                        console.log(data)
+                    }
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            })
+        })
+    </script>
+}

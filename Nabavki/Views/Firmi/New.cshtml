@@ -1,0 +1,30 @@
+﻿@model Nabavki.ViewModels.FirmaViewModel
+@{
+    ViewBag.Title = "Внеси назив на фирма";
+}
+
+<br />
+<a href="/firmi/index" class="btn btn-info">Назад</a>
+<br />
+
+<h2>@ViewBag.Title</h2>
+
+<form action="/firmi/New" method="post">
+    <div class="form-group">
+        <label for="naziv">Назив:</label>
+        @*<input required type="text" class="form-control" name="naziv" id="firma" placeholder="Внеси назив">*@
+        @Html.TextBoxFor(x => x.Naziv, null, new { @class = "form-control", @placeholder = "Внеси назив" })
+        @Html.ValidationMessageFor(x => x.Naziv)
+    </div>
+    <div class="form-group">
+        <input type="submit" class="btn btn-success" value="Потврди" id="submit" />
+    </div>
+</form>
+
+
+@section scripts{
+
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
