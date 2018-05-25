@@ -7,10 +7,8 @@ namespace Nabavki.Models
 
     public partial class NabavkiDbContext : ApplicationDbContext
     {
-
         public virtual DbSet<Artikli> Artikli { get; set; }
         public virtual DbSet<Firma> Firmi { get; set; }
         public virtual DbSet<Partner> Partneri { get; set; }
-
     }
 }

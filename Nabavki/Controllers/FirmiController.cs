@@ -29,7 +29,8 @@ namespace Nabavki.Controllers
                 var f = new FirmaViewModel
                 {
                     IdFirma = firma.IdFirma,
-                    Naziv = firma.Naziv
+                    Naziv = firma.Naziv,
+                    BrojNaPartneri = firma.Partners.Count
                 };
                 model.Add(f);
             }

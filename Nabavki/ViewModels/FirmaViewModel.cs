@@ -23,5 +23,7 @@ namespace Nabavki.ViewModels
             Partneri = new List<PartnerViewModel>();
         }
 
+        public int BrojNaPartneri { get; set; }
+
     }
 }

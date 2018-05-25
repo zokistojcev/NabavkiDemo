@@ -11,21 +11,25 @@
     <thead>
         <tr>
             <th>Назив на фирма</th>
+            <th>Број на партнери</th>
             <th>Акција</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var firma in Model)
         {
-            <tr>
-                <td>
-                    <a href="/firmi/details/@firma.IdFirma">@firma.Naziv</a>
-                </td>
-                <td>
-                    <a href="/firmi/edit/@firma.IdFirma" class="btn btn-info">Edit</a>
-                    <a href="/firmi/delete/@firma.IdFirma" class="btn btn-danger">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <a href="/firmi/details/@firma.IdFirma">@firma.Naziv</a>
+            </td>
+            <td>
+                @firma.BrojNaPartneri
+            </td>
+            <td>
+                <a href="/firmi/edit/@firma.IdFirma" class="btn btn-info">Edit</a>
+                <a href="/firmi/delete/@firma.IdFirma" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
