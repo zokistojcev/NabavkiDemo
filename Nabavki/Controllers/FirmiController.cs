@@ -66,7 +66,7 @@ namespace Nabavki.Controllers
         {
             if (id == null)
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Greska");
-            
+
             var firma = _context.Firmi.Find(id);
             if (firma == null)
                 return HttpNotFound();
@@ -96,7 +96,7 @@ namespace Nabavki.Controllers
         {
             if (!ModelState.IsValid)
                 return View("Details", new { id = partner.IdPartner });
-            
+
             Partner part = new Partner
             {
                 Naziv = partner.Naziv,
@@ -173,7 +173,7 @@ namespace Nabavki.Controllers
             }
 
             fvm.Partneri = lpvm;
-            
+
             return View(fvm);
         }
 
@@ -181,8 +181,8 @@ namespace Nabavki.Controllers
         public ActionResult UpdateFirma(FirmaViewModel firma)
         {
             if (!ModelState.IsValid)
-                return RedirectToAction("Edit", new { id = firma.IdFirma});
-            
+                return RedirectToAction("Edit", new { id = firma.IdFirma });
+
             var firmaDb = _context.Firmi.Find(firma.IdFirma);
 
             if (firmaDb == null)
@@ -194,7 +194,7 @@ namespace Nabavki.Controllers
             return RedirectToAction("Index");
         }
 
-        
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -209,7 +209,7 @@ namespace Nabavki.Controllers
             foreach (var item in partneri)
             {
                 var artikli = _context.Artikli.Where(x => x.IdPartner == item.IdPartner);
-     
+
                 _context.Artikli.RemoveRange(artikli);
             }
 
@@ -220,6 +220,35 @@ namespace Nabavki.Controllers
             _context.SaveChanges();
 
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public ActionResult EditPartner(PartnerViewModel partner)
+        {
+            var par = _context.Partneri.Find(partner.IdPartner);
+            par.Naziv = partner.Naziv;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("GetPartners", new { id = partner.IdFirma });
+        }
+
+
+
+        public ActionResult DeletePartner(int? id)
+        {
+
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Greska");
+
+            var partner = _context.Partneri.Find(id);
+            var artikli = _context.Artikli.Where(x => x.IdPartner == id).ToList();
+
+            _context.Artikli.RemoveRange(artikli);
+            _context.Partneri.Remove(partner);
+            _context.SaveChanges();
+
+            return RedirectToAction("GetPartners", new { id = partner.IdFirma });
         }
 
     }

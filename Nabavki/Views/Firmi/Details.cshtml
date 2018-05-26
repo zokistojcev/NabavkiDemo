@@ -9,14 +9,15 @@
 <h2>@Model.Naziv</h2>
 
 
-<div class="form-group">
-    <label for="naziv">Назив на партнер:</label>
-    <input required type="text" class="form-control" name="naziv" id="partner" placeholder="Внеси партнер">
-</div>
-<div class="form-group">
-    <button class="btn btn-success" id="submit">Потврди</button>
-    <input type="hidden" id="firma" name="idFirma" value="@Model.IdFirma" />
-</div>
+    <div class="form-group">
+        <label for="naziv">Назив на партнер:</label>
+        <input type="text" class="form-control" name="naziv" id="partner" placeholder="Внеси партнер" required />
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-success" id="submit">Потврди</button>
+        <input type="hidden" id="firma" name="idFirma" value="@Model.IdFirma" />
+    </div>
 
 <br>
 <br>
@@ -29,51 +30,222 @@
     <tbody>
         @foreach (var item in Model.Partneri)
         {
-        <tr>
-            <td>
-                @item.Naziv
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @item.Naziv
+
+                </td>
+
+                <td>
+                    <button id="partnerEdit" type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit-@item.IdPartner" data-id="@item.IdPartner">Edit</button>
+
+
+                    <div class="modal" id="edit-@item.IdPartner" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">Внеси назив на партнер: </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <input required class="form-control" type="text" id="naziv-@item.IdPartner" name="idFirma" value="@item.Naziv" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
+                                    <button onclick="editPartner(this)" data-id="@item.IdFirma" type="button" class="btn btn-primary" data-dismiss="modal">Зачувај</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+        
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-@item.IdPartner" data-id="@item.IdPartner">Delete</button>
+
+                    <div class="modal" id="delete-@item.IdPartner" tabindex="-1" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Сакате да го избришете овој партнер?</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>@item.Naziv</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button onclick="izbrisiPartner(this)" data-id="@item.IdPartner" type="button" class="btn btn-primary" data-dismiss="modal">Да</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Не</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </td>
+            </tr>
         }
     </tbody>
 </table>
 
+@*<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#flipFlop">
+    Click Me
+</button>*@
+
 
 @section scripts{
-    <script>
 
-        $("#submit").click(function () {
+    @Scripts.Render("~/bundles/jqueryval");
 
-            var partnerNameValue = $("#partner").val();
-            var idFirmaValue = $("#firma").val();
+<script>
 
-            $.ajax({
-                method: "POST",
-                url: "http://localhost:65274/Firmi/AddPartner",
-                data: {
-                    naziv: partnerNameValue,
-                    idFirma: idFirmaValue
-                },
-                dataType: "json",
-                success: function (data) {
+    function editPartner(a) {
+        var id = $(a).attr("data-id");
+        var naziv = $('#naziv-' + id).val();
+        var idFirmaValue = $("#firma").val();
 
-                    var $body = $("tbody");
-                    $body.empty();
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:65274/Firmi/EditPartner/",
+            data: { Naziv: naziv, IdPartner: id, IdFirma: idFirmaValue },
+            dataType: "json",
+            success: function (data) {
 
-                    for (var i = 0; i < data.length; i++) {
-                        $body.append("<tr> <td>" + data[i].Naziv + "</td></tr>")
-                        console.log(data[i]);
-                    }
-                    $("#partner").val("");
-                },
-                error: function (e) {
-                    console.log(e);
+                var $body = $("tbody");
+                $body.empty();
+                for (var i = 0; i < data.length; i++) {
+                    $body.append(renderPartneriRow(data, i));
                 }
-            });
+
+                $("#partner").val("");
+
+
+            },
+            error: function (e) {
+                console.log(e);
+            }
         });
-    </script>
+
+    }
+
+    $("#submit").click(function () {
+        var partnerNameValue = $("#partner").val();
+        var idFirmaValue = $("#firma").val();
+
+        $.ajax({
+            method: "POST",
+            url: "http://localhost:65274/Firmi/AddPartner",
+            data: {
+                naziv: partnerNameValue,
+                idFirma: idFirmaValue
+            },
+            dataType: "json",
+            success: function (data) {
+
+                var bodyx = $("tbody");
+
+                bodyx.empty();
+                for (var i = 0; i < data.length; i++) {
+                    bodyx.append(renderPartneriRow(data, i));
+                }
+
+
+
+                $("#partner").val("");
+
+            },
+            error: function (e) {
+                console.log(e);
+            }
+        });
+    });
+
+
+    function izbrisiPartner(a) {
+        var id = $(a).attr("data-id");
+        console.log(id);
+        //var naziv = $('#naziv-' + id).val();
+        //var idFirmaValue = $("#firma").val();
+        $.ajax({
+            url: "http://localhost:65274/Firmi/DeletePartner/" + id,
+            type: 'POST',
+            dataType: "json",
+            success: function (data) {
+                console.log("uspesno izbrisan partner");
+                var bodyx = $("tbody");
+
+                bodyx.empty();
+                for (var i = 0; i < data.length; i++) {
+                    bodyx.append(renderPartneriRow(data, i));
+                }
+
+                $("#partner").val("");
+
+            }
+        });
+    };
+
+    function renderPartneriRow(data, i) {
+        return `<tr>
+                        <td>${data[i].Naziv}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#edit-${data[i].IdPartner}">
+                                Edit
+                            </button>
+                            <div class="modal" id="edit-${data[i].IdPartner}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="myModalLabel">Внеси назив на партнер: </h4>
+                                        </div>
+                                        <div class="modal-body">
+
+                                            <div class="form-group">
+                                                <input class="form-control" type="text" id="naziv-${data[i].IdPartner}" name="idFirma" value="${data[i].Naziv}" />
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Затвори</button>
+                                            <button onclick="editPartner(this)" data-id="${data[i].IdPartner}" type="button" class="btn btn-primary" data-dismiss="modal">Зачувај</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                          
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-${data[i].IdPartner}">
+                                Delete
+                            </button>
+
+                            <div class="modal" id="delete-${data[i].IdPartner}" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Сакате да го избришете овој партнер?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>"${data[i].Naziv}"</p>
+                                        </div>
+                                        <div class="modal-footer">
+
+                                            <button onclick="izbrisiPartner(this)" data-id="${data[i].IdPartner}" type="button" class="btn btn-primary" data-dismiss="modal">Да</button>
+
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Не</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>`
+        }
+
+</script>
 
 }
-
-
-
